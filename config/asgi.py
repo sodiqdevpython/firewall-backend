@@ -1,19 +1,14 @@
 import os
-from django.core.asgi import get_asgi_application
+import django
 from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-import applications.routing as applications_routing
-import hosts.routing as host_routing
-import logs.routing as logs_routing
+from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")  # 1) settingsni aniqlash
+django.setup()  # 2) django setup qilish
+
+from hosts.routing import websocket_urlpatterns  # 3) endi routingni import qiling
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
-        URLRouter(
-            applications_routing.websocket_urlpatterns
-            + logs_routing.websocket_urlpatterns + host_routing.websocket_urlpatterns
-        )
-    ),
+    "websocket": URLRouter(websocket_urlpatterns),
 })

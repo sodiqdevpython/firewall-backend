@@ -10,6 +10,8 @@ class Application(BaseModel):
     name = models.CharField(max_length=1024)
     hash = models.CharField(max_length=64)
     status = models.CharField(max_length=10, choices=ApplicationStatusChoice.choices,default=ApplicationStatusChoice.Running)
+    sent = models.CharField(max_length=256, null=True, blank=True)
+    received =models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
         return self.name
