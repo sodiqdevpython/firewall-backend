@@ -13,7 +13,7 @@ class ConnectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Connection
-        fields = ['id', 'application_hash', 'protocol', 'direction', 'local_address', 'remote_address', 'status', 'more_info']
+        fields = ['id', 'application_hash', 'protocol', 'local_address', 'remote_address', 'more_info']
 
     def create(self, validated_data):
         app_hash = validated_data.pop('application_hash')

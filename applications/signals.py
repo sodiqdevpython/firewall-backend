@@ -42,10 +42,8 @@ def connection_created(sender, instance: Connection, created, **kwargs):
             "application_id": str(app.id) if app else None,
             "host_id": host_id,
             "protocol": instance.protocol,
-            "direction": instance.direction,
             "local_address": instance.local_address,
             "remote_address": instance.remote_address,
-            "status": instance.status,
             "more_info": instance.more_info or None,
             "created_at": _safe_dt(instance.created_at),
         }
