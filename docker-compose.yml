@@ -3,7 +3,8 @@ version: '3.9'
 services:
   web:
     build: .
-    container_name: django_web
+    container_name: firewall_backend
+    restart: always
     command: >
       sh -c "
         python manage.py migrate &&
@@ -23,5 +24,6 @@ services:
   redis:
     image: redis:7
     container_name: redis
+    restart: always
     ports:
       - "6379:6379"
