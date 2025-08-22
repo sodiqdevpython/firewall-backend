@@ -4,17 +4,16 @@ from hosts.models import Device
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    bios_uuid = serializers.UUIDField(write_only=True)
-
+    host = serializers.CharField(write_only=True)
     class Meta:
         model = Application
         fields = '__all__'
-        extra_fields = ['bios_uuid']
 
     def create(self, validated_data):
-        bios_uuid = validated_data.pop('bios_uuid')
+        bios_uuid = validated_data.pop('host')
         try:
             device = Device.objects.get(bios_uuid=bios_uuid)
+            print(device)
         except Device.DoesNotExist:
             raise serializers.ValidationError(
                 {"bios_uuid": "Device not found."})
