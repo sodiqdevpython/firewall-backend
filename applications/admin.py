@@ -9,6 +9,5 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(Connection)
 class ConnectionAdmin(admin.ModelAdmin):
-    list_display = ("application", "protocol", "local_address", "remote_address",)
-    list_filter = ("protocol",)
+    list_display = ("application", "local_address", "remote_address",)
     search_fields = ("local_address", "remote_address")

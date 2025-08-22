@@ -41,7 +41,6 @@ def connection_created(sender, instance: Connection, created, **kwargs):
             "id": str(instance.id),
             "application_id": str(app.id) if app else None,
             "host_id": host_id,
-            "protocol": instance.protocol,
             "local_address": instance.local_address,
             "remote_address": instance.remote_address,
             "more_info": instance.more_info or None,

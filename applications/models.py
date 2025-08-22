@@ -1,6 +1,6 @@
 from django.db import models
 
-from .choices import ApplicationStatusChoice, ConnectionProtocolChoice
+from .choices import ApplicationStatusChoice
 from utils.models import BaseModel
 
 class Application(BaseModel):
@@ -18,7 +18,6 @@ class Application(BaseModel):
 
 class Connection(BaseModel):
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
-    protocol = models.CharField(max_length=10, choices=ConnectionProtocolChoice.choices)
     local_address = models.CharField(max_length=128)
     remote_address = models.CharField(max_length=128)
     more_info = models.JSONField(null=True, blank=True)

@@ -17,12 +17,15 @@ class AgentConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+        device_updated = await self.set_online()
+
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
+        device_updated = await self.set_offline()
 
     async def receive(self, text_data):
         try:
@@ -47,6 +50,7 @@ class AgentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def set_online(self):
         device = Device.objects.get(bios_uuid=self.room_name)
+        print(device, 11111111111111111)
         device.status = DeviceStatusChoice.Online
         device.save(update_fields=["status"])
 
