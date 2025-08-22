@@ -14,6 +14,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 class ConnectionViewSet(viewsets.ModelViewSet):
     queryset = Connection.objects.all()
     serializer_class = ConnectionSerializer
-    filterset_fields = ['status', 'direction', 'application']
+    filterset_fields = ['application']
     search_fields = ['local_address', 'remote_address']
-    ordering_fields = ['status', 'local_address', 'remote_address']
+    ordering_fields = ['local_address', 'remote_address']
