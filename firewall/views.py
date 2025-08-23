@@ -22,7 +22,7 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
 
         host_data = data.get("host")
-        application_hash = data.get("application_hash")
+        application_hash = data.get("hash")
 
         if isinstance(host_data, dict):
             host_name = host_data.get("host_name")
