@@ -40,7 +40,7 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
             raise ValidationError("Application hash is required.")
 
         try:
-            application = Application.objects.get(hash=application_hash)
+            application = Application.objects.filter(hash=application_hash).first()
         except Application.DoesNotExist:
             raise ValidationError("Application with the given hash does not exist.")
 
