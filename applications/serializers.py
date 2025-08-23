@@ -24,21 +24,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
 class ConnectionSerializer(serializers.ModelSerializer):
-    application_hash = serializers.CharField(write_only=True)
+    hash = serializers.CharField(write_only=True)
     application = ApplicationSerializer(read_only=True)
 
     class Meta:
         model = Connection
-        fields = ['id', 'application_hash', "application",
+        fields = ['id', 'hash', "application",
                   'local_address', 'remote_address', 'more_info']
 
     def create(self, validated_data):
-        app_hash = validated_data.pop('application_hash')
+        app_hash = validated_data.pop('hash')
         try:
             application = Application.objects.filter(hash=app_hash).first()
         except Application.DoesNotExist:
             raise serializers.ValidationError(
-                {'application_hash': 'Invalid application hash'})
+                {'hash': 'Invalid application hash'})
         connection = Connection.objects.create(
             application=application, **validated_data)
         return connection
