@@ -35,7 +35,7 @@ class ConnectionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         app_hash = validated_data.pop('application_hash')
         try:
-            application = Application.objects.get(hash=app_hash)
+            application = Application.objects.filter(hash=app_hash).first()
         except Application.DoesNotExist:
             raise serializers.ValidationError(
                 {'application_hash': 'Invalid application hash'})
