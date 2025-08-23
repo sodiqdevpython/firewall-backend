@@ -22,7 +22,7 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
 
         host_data = data.get("host")
-        application_hash = data.get("application_hash")
+        application_hash = data.get("hash")
 
         if isinstance(host_data, dict):
             host_name = host_data.get("host_name")
@@ -47,7 +47,7 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
         firewall_rule = FirewallRule.objects.create(
             host=device,
             application=application,
-            **{k: v for k, v in data.items() if k not in ["host", "application_hash"]}
+            **{k: v for k, v in data.items() if k not in ["host", "hash"]}
         )
 
         channel_layer = get_channel_layer()
