@@ -5,6 +5,7 @@ from hosts.models import Device
 
 class ApplicationSerializer(serializers.ModelSerializer):
     host = serializers.CharField(write_only=True)
+
     class Meta:
         model = Application
         fields = '__all__'
@@ -24,10 +25,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 class ConnectionSerializer(serializers.ModelSerializer):
     application_hash = serializers.CharField(write_only=True)
+    application = ApplicationSerializer(read_only=True)
 
     class Meta:
         model = Connection
-        fields = ['id', 'application_hash',
+        fields = ['id', 'application_hash', "application",
                   'local_address', 'remote_address', 'more_info']
 
     def create(self, validated_data):
