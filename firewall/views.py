@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from .models import FirewallRule, RuleAssignment
 from .serializers import FirewallRuleSerializer, RuleAssignmentSerializer
+from firewall.services.firewall_rule_service import FirewallRuleService
 
 
 class FirewallRuleViewSet(viewsets.ModelViewSet):
@@ -9,6 +10,10 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
     filterset_fields = ['host', 'application', 'protocol', 'direction', 'action', 'port']
     search_fields = ['protocol', 'direction', 'action']
     ordering_fields = ['port', 'protocol', 'direction']
+
+    def create(self, request, *args, **kwargs):
+        firewall_rule = FirewallRuleService.create_firewall_rule(request.data.copy())
+
 
 
 class RuleAssignmentViewSet(viewsets.ModelViewSet):
