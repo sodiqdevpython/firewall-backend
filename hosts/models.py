@@ -2,6 +2,7 @@ from django.db import models
 from utils.models import BaseModel
 from .choices import DeviceStatusChoice
 
+
 class Device(BaseModel):
     bios_uuid = models.UUIDField(unique=True)
     host_name = models.CharField(max_length=255)
@@ -12,4 +13,3 @@ class Device(BaseModel):
 
     def __str__(self):
         return self.host_name
-

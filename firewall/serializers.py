@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from applications.models import Application
 from hosts.serializers import DeviceNestedSerializer
-from .models import FirewallRule, RuleAssignment
+from .models import FirewallRule
 from applications.serializers import ApplicationSerializer
 
 
@@ -25,9 +25,3 @@ class FirewallRuleSerializer(serializers.ModelSerializer):
                 {'application_hash': 'Invalid application hash'})
         validated_data['application'] = application
         return super().create(validated_data)
-
-
-class RuleAssignmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RuleAssignment
-        fields = '__all__'

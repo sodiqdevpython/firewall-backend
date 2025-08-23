@@ -15,12 +15,3 @@ class FirewallRule(BaseModel):
 
     def __str__(self):
         return f"{self.host}:{self.port}"
-
-
-class RuleAssignment(BaseModel):
-    rule = models.ForeignKey(FirewallRule, on_delete=models.CASCADE)
-    host = models.ForeignKey('hosts.Device', on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=FirewallRuleActionChoices.choices)
-
-    def __str__(self):
-        return f"{self.rule}:{self.host}"

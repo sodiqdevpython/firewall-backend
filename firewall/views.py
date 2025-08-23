@@ -3,8 +3,8 @@ from channels.layers import get_channel_layer
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from .models import FirewallRule, RuleAssignment
-from .serializers import FirewallRuleSerializer, RuleAssignmentSerializer
+from .models import FirewallRule
+from .serializers import FirewallRuleSerializer
 from hosts.models import Device
 from applications.models import Application
 import json
@@ -61,11 +61,3 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(firewall_rule)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class RuleAssignmentViewSet(viewsets.ModelViewSet):
-    queryset = RuleAssignment.objects.all()
-    serializer_class = RuleAssignmentSerializer
-    filterset_fields = ['status', 'rule', 'host']
-    search_fields = ['rule__protocol', 'rule__direction', 'host__host_name']
-    ordering_fields = ['status', 'rule', 'host']

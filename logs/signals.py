@@ -3,8 +3,10 @@ from django.dispatch import receiver
 from utils.realtime import broadcast
 from .models import AgentLog
 
+
 def _safe_dt(dt):
     return dt.isoformat() if dt else None
+
 
 @receiver(post_save, sender=AgentLog)
 def agentlog_created(sender, instance: AgentLog, created, **kwargs):

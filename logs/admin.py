@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import AgentLog
 
+
 @admin.register(AgentLog)
 class AgentLogAdmin(admin.ModelAdmin):
     list_display = ("host", "level", "message")
