@@ -19,7 +19,6 @@ class AgentConsumer(AsyncWebsocketConsumer):
         await self.accept()
         device_updated = await self.set_online()
 
-
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.room_group_name,
@@ -70,3 +69,27 @@ class AgentConsumer(AsyncWebsocketConsumer):
             "last_seen": device.last_seen.isoformat() if device.last_seen else None,
             "name": getattr(device, "name", None)
         }
+
+
+class DeviceConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        bios_uuid = self.scope['url_route']['kwargs']['bios_uuid']
+        self.group_name = f"device_{bios_uuid}"
+
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+
+    async def firewall_rule(self, event):
+        await self.send(text_data=json.dumps({
+            "event": "firewall_rule",
+            "data": event["rule"]
+        }))
