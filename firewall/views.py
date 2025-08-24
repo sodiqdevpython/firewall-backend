@@ -39,9 +39,8 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
         if not application_hash:
             raise ValidationError("Application hash is required.")
 
-        try:
-            application = Application.objects.filter(hash=application_hash).first()
-        except Application.DoesNotExist:
+        application = Application.objects.filter(hash=application_hash).first()
+        if not application:
             raise ValidationError("Application with the given hash does not exist.")
 
         firewall_rule = FirewallRule.objects.create(
@@ -55,9 +54,29 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
             f"device_{firewall_rule.host.bios_uuid}",
             {
                 "type": "firewall.rule",
+                "event": "created",
                 "rule": json.loads(json.dumps(FirewallRuleSerializer(firewall_rule).data, cls=DjangoJSONEncoder)),
             }
         )
 
         serializer = self.get_serializer(firewall_rule)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        rule_data = json.loads(json.dumps(self.get_serializer(instance).data, cls=DjangoJSONEncoder))
+        bios_uuid = instance.host.bios_uuid
+
+        self.perform_destroy(instance)
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"device_{bios_uuid}",
+            {
+                "type": "firewall.rule",
+                "event": "deleted",
+                "rule": rule_data,
+            }
+        )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

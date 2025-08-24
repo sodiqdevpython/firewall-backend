@@ -90,6 +90,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
 
     async def firewall_rule(self, event):
         await self.send(text_data=json.dumps({
-            "event": "firewall_rule",
+            "type": "firewall_rule",
+            "event": event.get("event", "unknown"),
             "data": event["rule"]
         }))
