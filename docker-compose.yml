@@ -9,12 +9,12 @@ services:
       sh -c "
         python manage.py migrate &&
         python manage.py collectstatic --noinput &&
-        daphne -b 0.0.0.0 -p 8047 config.asgi:application
+        daphne -b 0.0.0.0 -p 8000 config.asgi:application
       "
     volumes:
       - .:/app
     ports:
-      - "8047:8047"
+      - "8000:8000"
     depends_on:
       - redis
     environment:
