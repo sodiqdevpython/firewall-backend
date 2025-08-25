@@ -11,5 +11,5 @@ class FirewallRuleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FirewallRule
-        fields = ("id", "host", "application",
+        fields = ("id", "host", "application", "description", "title",
                   "port", "protocol", "direction", "action")
