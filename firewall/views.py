@@ -27,7 +27,7 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f"device_{firewall_rule.host.bios_uuid}",
+            "all_devices",
             {
                 "type": "firewall.rule",
                 "event": "created",
@@ -41,13 +41,12 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         rule_data = json.loads(json.dumps(self.get_serializer(instance).data, cls=DjangoJSONEncoder))
-        bios_uuid = instance.host.bios_uuid
 
         self.perform_destroy(instance)
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f"device_{bios_uuid}",
+            f"all_devices",
             {
                 "type": "firewall.rule",
                 "event": "deleted",
