@@ -3,24 +3,60 @@ from .models import Application, Connection
 from hosts.models import Device
 
 
+class ConnectionBulkCreateSerializer(serializers.ModelSerializer):
+    local = serializers.CharField(write_only=True)
+    remote = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Connection
+        exclude = ["application", "local_address", "remote_address"]
+
+    def validate(self, attrs):
+        local_ip, local_port = attrs["local"].split(":")
+        remote_ip, remote_port = attrs["remote"].split(":")
+
+        attrs["local_address"] = local_ip
+        attrs["remote_address"] = remote_ip
+        return attrs
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
     host = serializers.CharField(write_only=True)
+    connections = ConnectionBulkCreateSerializer(many=True, write_only=True, required=False)
 
     class Meta:
         model = Application
         fields = '__all__'
 
     def create(self, validated_data):
-        bios_uuid = validated_data.pop('host')
+        connections_data = validated_data.pop("connections", [])
+        bios_uuid = validated_data.pop("host")
+
         try:
             device = Device.objects.get(bios_uuid=bios_uuid)
-            print(device)
         except Device.DoesNotExist:
-            raise serializers.ValidationError(
-                {"bios_uuid": "Device not found."})
+            raise serializers.ValidationError({"host": f"Device {bios_uuid} not found"})
+        validated_data["host"] = device
 
-        validated_data['host'] = device
-        return super().create(validated_data)
+        application = super().create(validated_data)
+
+        connection_objs = []
+        for conn in connections_data:
+            local_ip, local_port = conn["local"].split(":")
+            remote_ip, remote_port = conn["remote"].split(":")
+
+            connection_objs.append(Connection(
+                application=application,
+                timestamp=conn["timestamp"],
+                direction=conn["direction"].upper(),
+                local_address=local_ip,
+                remote_address=remote_port,
+                bytes=conn["bytes"]
+            ))
+        if connection_objs:
+            Connection.objects.bulk_create(connection_objs)
+
+        return application
 
 
 class ConnectionSerializer(serializers.ModelSerializer):

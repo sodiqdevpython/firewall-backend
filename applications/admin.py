@@ -5,9 +5,9 @@ from hosts.models import Device
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ("name", "host", "pid", "status", "hash")
-    list_filter = ("status", "host")
-    search_fields = ("name", "pid", "hash")
+    list_display = ("name", "host", "pid",)
+    list_filter = ("host",)
+    search_fields = ("name", "pid",)
 
 
 class HostNameFilter(admin.SimpleListFilter):
