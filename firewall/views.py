@@ -21,13 +21,28 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
 
+        host_data = data.pop("host", None)  # host ni olib tashlaymiz
+
+        if isinstance(host_data, dict):
+            host_name = host_data.get("host_name")
+            try:
+                device = Device.objects.get(host_name=host_name)
+            except Device.DoesNotExist:
+                raise ValidationError("Device with the given host_name does not exist.")
+        else:
+            try:
+                device = Device.objects.get(bios_uuid=host_data)
+            except Device.DoesNotExist:
+                raise ValidationError("Device with the given BIOS UUID does not exist.")
+
         firewall_rule = FirewallRule.objects.create(
-            **{k: v for k, v in data.items()}
+            host=device,
+            **data  # endi host yo‘q
         )
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            "all_devices",
+            f"device_{firewall_rule.host.bios_uuid}",
             {
                 "type": "firewall.rule",
                 "event": "created",
@@ -41,12 +56,13 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         rule_data = json.loads(json.dumps(self.get_serializer(instance).data, cls=DjangoJSONEncoder))
+        bios_uuid = instance.host.bios_uuid
 
         self.perform_destroy(instance)
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f"all_devices",
+            f"device_{bios_uuid}",
             {
                 "type": "firewall.rule",
                 "event": "deleted",

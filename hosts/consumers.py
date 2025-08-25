@@ -73,7 +73,9 @@ class AgentConsumer(AsyncWebsocketConsumer):
 
 class DeviceConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.group_name = "all_devices"
+        bios_uuid = self.scope['url_route']['kwargs']['bios_uuid']
+        self.group_name = f"device_{bios_uuid}"
+
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
