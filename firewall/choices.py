@@ -8,9 +8,9 @@ class FirewallRuleChoices(TextChoices):
 
 
 class FirewallRuleDirectionChoices(TextChoices):
-    INBOUND = 'INBOUND'
-    OUTBOUND = 'OUTBOUND'
-    BOTH = 'BOTH'
+    IN = 'IN', 'Inbound'
+    OUT = 'OUT', 'Outbound'
+    BOTH = 'BOTH', 'Both'
 
 
 class FirewallRuleActionChoices(TextChoices):

@@ -21,7 +21,7 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
 
-        host_data = data.pop("host", None)  # host ni olib tashlaymiz
+        host_data = data.pop("host", None)
 
         if isinstance(host_data, dict):
             host_name = host_data.get("host_name")
@@ -35,10 +35,9 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
             except Device.DoesNotExist:
                 raise ValidationError("Device with the given BIOS UUID does not exist.")
 
-        firewall_rule = FirewallRule.objects.create(
-            host=device,
-            **data  # endi host yo‘q
-        )
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        firewall_rule = serializer.save(host=device)
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
@@ -46,11 +45,10 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
             {
                 "type": "firewall.rule",
                 "event": "created",
-                "rule": json.loads(json.dumps(FirewallRuleSerializer(firewall_rule).data, cls=DjangoJSONEncoder)),
+                "rule": serializer.data,
             }
         )
 
-        serializer = self.get_serializer(firewall_rule)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
