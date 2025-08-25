@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Application, Connection
 from hosts.models import Device
+from applications.utils import ip_lookup_online
 
 
 class ConnectionBulkCreateSerializer(serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class ConnectionBulkCreateSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    host = serializers.CharField(write_only=True)
+    host = serializers.CharField()
     connections = ConnectionBulkCreateSerializer(many=True, write_only=True, required=False)
 
     class Meta:
@@ -42,19 +43,26 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
         connection_objs = []
         for conn in connections_data:
-            local_ip, local_port = conn["local"].split(":")
-            remote_ip, remote_port = conn["remote"].split(":")
+            local_ip = conn["local"].split(":")[0]
+            remote_ip = conn["remote"].split(":")[0]
+            more_info = {
+                "remote_address": ip_lookup_online(remote_ip)
+            }
 
             connection_objs.append(Connection(
                 application=application,
                 timestamp=conn["timestamp"],
                 direction=conn["direction"].upper(),
                 local_address=local_ip,
-                remote_address=remote_port,
-                bytes=conn["bytes"]
+                remote_address=remote_ip,
+                bytes=conn["bytes"],
+                more_info=more_info
             ))
         if connection_objs:
-            Connection.objects.bulk_create(connection_objs)
+            created_objs = Connection.objects.bulk_create(connection_objs)
+            from .tasks import fetch_more_info
+            for conn_obj in created_objs:
+                fetch_more_info.delay(conn_obj.id, conn_obj.remote_address)
 
         return application
 
