@@ -9,9 +9,9 @@ from rest_framework import status
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
-    filterset_fields = ['status', 'host', 'pid', 'hash']
-    search_fields = ['name', 'hash', 'image_path']
-    ordering_fields = ['name', 'pid', 'status']
+    filterset_fields = ['host', 'pid']
+    search_fields = ['name', 'image_path']
+    ordering_fields = ['name', 'pid']
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(

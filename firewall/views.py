@@ -21,32 +21,8 @@ class FirewallRuleViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
 
-        host_data = data.get("host")
-        application_hash = data.get("hash")
-
-        if isinstance(host_data, dict):
-            host_name = host_data.get("host_name")
-            try:
-                device = Device.objects.get(host_name=host_name)
-            except Device.DoesNotExist:
-                raise ValidationError("Device with the given host_name does not exist.")
-        else:
-            try:
-                device = Device.objects.get(bios_uuid=host_data)
-            except Device.DoesNotExist:
-                raise ValidationError("Device with the given BIOS UUID does not exist.")
-
-        if not application_hash:
-            raise ValidationError("Application hash is required.")
-
-        application = Application.objects.filter(hash=application_hash).first()
-        if not application:
-            raise ValidationError("Application with the given hash does not exist.")
-
         firewall_rule = FirewallRule.objects.create(
-            host=device,
-            application=application,
-            **{k: v for k, v in data.items() if k not in ["host", "hash"]}
+            **{k: v for k, v in data.items()}
         )
 
         channel_layer = get_channel_layer()
