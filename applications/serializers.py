@@ -60,9 +60,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ))
         if connection_objs:
             Connection.objects.bulk_create(connection_objs)
-            # from .tasks import fetch_more_info
-            # for conn_obj in created_objs:
-            #     fetch_more_info.delay(conn_obj.id, conn_obj.remote_address)
 
         return application
 

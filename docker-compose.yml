@@ -28,17 +28,3 @@ services:
     ports:
       - "6379:6379"
 
-  celery:
-    build: .
-    container_name: celery_worker
-    restart: always
-    command: celery -A config worker -l info -c 10
-    volumes:
-      - .:/app
-    depends_on:
-      - redis
-      - web
-    environment:
-      - DEBUG=1
-      - DJANGO_SETTINGS_MODULE=config.settings
-
