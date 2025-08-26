@@ -7,5 +7,5 @@ class ApplicationStatusChoice(TextChoices):
 
 
 class ConnectionDirectionChoice(TextChoices):
-    INBOUND = "inbound", "Inbound"
-    OUTBOUND = "outbound", "Outbound"
+    INBOUND = "Inbound", "Inbound"
+    OUTBOUND = "Outbound", "Outbound"

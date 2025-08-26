@@ -48,7 +48,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             connection_objs.append(Connection(
                 application=application,
                 timestamp=conn["timestamp"],
-                direction=conn["direction"].upper(),
+                direction=conn["direction"].lower(),
                 local_address=local_ip,
                 remote_address=remote_ip,
                 bytes=conn["bytes"],
