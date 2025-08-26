@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Application, Connection
 from hosts.models import Device
-from applications.utils import ip_lookup_online
 
 
 class ConnectionBulkCreateSerializer(serializers.ModelSerializer):
@@ -45,9 +44,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         for conn in connections_data:
             local_ip = conn["local"].split(":")[0]
             remote_ip = conn["remote"].split(":")[0]
-            more_info = {
-                "remote_address": ip_lookup_online(remote_ip)
-            }
 
             connection_objs.append(Connection(
                 application=application,
@@ -56,7 +52,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 local_address=local_ip,
                 remote_address=remote_ip,
                 bytes=conn["bytes"],
-                more_info=more_info
             ))
         if connection_objs:
             Connection.objects.bulk_create(connection_objs)
