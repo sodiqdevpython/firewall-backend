@@ -17,11 +17,13 @@ class ConnectionBulkCreateSerializer(serializers.ModelSerializer):
 
         attrs["local_address"] = local_ip
         attrs["remote_address"] = remote_ip
+
         return attrs
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
     host = serializers.CharField()
+    ip_address = serializers.CharField(source="host.ip_address", read_only=True)
     connections = ConnectionBulkCreateSerializer(many=True, write_only=True, required=False)
 
     class Meta:
@@ -48,7 +50,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             connection_objs.append(Connection(
                 application=application,
                 timestamp=conn["timestamp"],
-                direction=conn["direction"].lower(),
+                direction=conn["direction"],
                 local_address=local_ip,
                 remote_address=remote_ip,
                 bytes=conn["bytes"],

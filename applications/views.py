@@ -27,6 +27,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 class ConnectionViewSet(viewsets.ModelViewSet):
     queryset = Connection.objects.all()
     serializer_class = ConnectionSerializer
-    filterset_fields = ['application']
+    filterset_fields = ['application__host__bios_uuid',]
     search_fields = ['local_address', 'remote_address']
     ordering_fields = ['local_address', 'remote_address']
