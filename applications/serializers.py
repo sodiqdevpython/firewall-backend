@@ -44,8 +44,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
         connection_objs = []
         for conn in connections_data:
-            local_ip = conn["local"].split(":")[0]
-            remote_ip = conn["remote"].split(":")[0]
+            local_ip = conn["local"]
+            remote_ip = conn["remote"]
 
             connection_objs.append(Connection(
                 application=application,

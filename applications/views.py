@@ -56,5 +56,5 @@ class ConnectionListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         latest = Connection.objects.filter(remote_address=OuterRef("remote_address")).order_by("-created_at")
-        connections = Connection.objects.filter(id=Subquery(latest.values("id")[:1]))
+        connections = Connection.objects.filter(id=Subquery(latest.values("id")[:1])).order_by("-created_at")
         return connections
