@@ -48,3 +48,12 @@ class ConnectionRemoteAPIView(views.APIView):
         )
 
         return Response(list(connections))
+
+
+class ConnectionListAPIView(generics.ListAPIView):
+    serializer_class = ConnectionSerializer
+
+    def get_queryset(self):
+        latest = Connection.objects.filter(remote_address=OuterRef("remote_address")).order_by("-created_at")
+        connections = Connection.objects.filter(id=Subquery(latest.values("id")[:1]))
+        return connections
