@@ -1,8 +1,9 @@
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, views
 from .models import Application, Connection
 from .serializers import ApplicationSerializer, ConnectionSerializer
 from hosts.models import Device
 from rest_framework.response import Response
+from django.db.models import OuterRef, Subquery
 from rest_framework import status
 
 
@@ -27,6 +28,23 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 class ConnectionViewSet(viewsets.ModelViewSet):
     queryset = Connection.objects.all()
     serializer_class = ConnectionSerializer
-    filterset_fields = ['application__host__bios_uuid',]
+    filterset_fields = ['application__host__bios_uuid', ]
     search_fields = ['local_address', 'remote_address']
     ordering_fields = ['local_address', 'remote_address']
+
+
+class ConnectionRemoteAPIView(views.APIView):
+    def get(self, request):
+        latest = (
+            Connection.objects
+            .filter(remote_address=OuterRef("remote_address"))
+            .order_by("-created_at")
+        )
+
+        connections = (
+            Connection.objects
+            .filter(id=Subquery(latest.values("id")[:1]))
+            .values_list("remote_address", flat=True)
+        )
+
+        return Response(list(connections))
