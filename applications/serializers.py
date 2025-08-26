@@ -68,7 +68,7 @@ class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
         fields = ['id', 'hash', "application",
-                  'local_address', 'remote_address', 'more_info']
+                  'local_address', 'remote_address', 'more_info', "direction"]
 
     def create(self, validated_data):
         app_hash = validated_data.pop('hash')
