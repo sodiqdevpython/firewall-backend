@@ -52,6 +52,7 @@ class ConnectionRemoteAPIView(views.APIView):
 
 class ConnectionListAPIView(generics.ListAPIView):
     serializer_class = ConnectionSerializer
+    filterset_fields = ['application__host__bios_uuid', ]
 
     def get_queryset(self):
         latest = Connection.objects.filter(remote_address=OuterRef("remote_address")).order_by("-created_at")
