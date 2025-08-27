@@ -49,12 +49,25 @@ class ConnectionRemoteAPIView(views.APIView):
 
         return Response(list(connections))
 
+from django.db.models import Max, F
 
 class ConnectionListAPIView(generics.ListAPIView):
     serializer_class = ConnectionSerializer
     filterset_fields = ['application__host__bios_uuid', ]
 
     def get_queryset(self):
-        latest = Connection.objects.filter(remote_address=OuterRef("remote_address")).order_by("-created_at")
-        connections = Connection.objects.filter(id=Subquery(latest.values("id")[:1])).order_by("-created_at")
-        return connections
+        latest = (
+            Connection.objects
+            .values("remote_address")
+            .annotate(last_created=Max("created_at"))
+        )
+
+        return (
+            Connection.objects
+            .filter(
+                remote_address__in=[item["remote_address"] for item in latest],
+                created_at__in=[item["last_created"] for item in latest],
+            )
+            .order_by("-created_at")
+        )
+
