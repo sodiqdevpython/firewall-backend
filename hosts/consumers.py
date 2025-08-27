@@ -94,3 +94,17 @@ class DeviceConsumer(AsyncWebsocketConsumer):
             "event": event.get("event", "unknown"),
             "data": event["rule"]
         }))
+
+    async def download_patch(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "download_patch",
+            "data": event["data"]
+        }))
+
+        # 🔹 Install event
+
+    async def install_patch(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "install_patch",
+            "data": event["data"]
+        }))
