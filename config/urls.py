@@ -27,6 +27,7 @@ urlpatterns = [
     path('hosts/', include('hosts.urls')),
     path('logs/', include('logs.urls')),
     path('users/', include('users.urls')),
+    path('patch/', include('patch.urls')),
 
 
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),

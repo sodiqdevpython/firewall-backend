@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'applications',
     'firewall',
     'logs',
-    'users'
+    'users',
+    'patch'
 ]
 
 MIDDLEWARE = [
