@@ -25,6 +25,7 @@ django-filter==25.1
 django-jazzmin==3.0.1
 django-querycount==0.8.3
 djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
 drf-yasg==1.21.10
 hyperlink==21.0.0
 idna==3.10
@@ -38,6 +39,7 @@ prompt_toolkit==3.0.51
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.22
+PyJWT==2.10.1
 pyOpenSSL==25.1.0
 python-dateutil==2.9.0.post0
 pytz==2025.2
