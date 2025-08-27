@@ -95,13 +95,11 @@ class DeviceConsumer(AsyncWebsocketConsumer):
             "data": event["rule"]
         }))
 
-    async def download_patch(self, event):
+    async def download_patch(self, event):  # 👈 nomi xuddi "type" ga mos bo‘lishi kerak
         await self.send(text_data=json.dumps({
             "type": "download_patch",
             "data": event["data"]
         }))
-
-        # 🔹 Install event
 
     async def install_patch(self, event):
         await self.send(text_data=json.dumps({
