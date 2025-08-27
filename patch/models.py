@@ -13,6 +13,9 @@ class PatchManagement(BaseModel):
     mandatory = models.BooleanField(default=False)
     reboot_required = models.BooleanField(default=False)
     downloaded = models.BooleanField(default=False)
+    download_patch = models.BooleanField(default=False)
+    install_patch = models.BooleanField(default=False)
+
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
 

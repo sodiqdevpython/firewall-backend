@@ -11,7 +11,7 @@ class PatchManagementSerializer(serializers.ModelSerializer):
         fields = [
             "id", "title", "support", "kb",
             "mandatory", "reboot_required", "downloaded",
-            "device", "device_bios_uuid"
+            "device", "device_bios_uuid", "download_patch", "install_patch"
         ]
         read_only_fields = ["device"]
 
