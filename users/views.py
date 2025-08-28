@@ -1,12 +1,10 @@
-from rest_framework import status
-from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
+from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from users import serializers, models
 
-from users import serializers
 
-
-class LoginUserView(GenericAPIView):
+class LoginUserView(generics.GenericAPIView):
     serializer_class = serializers.UserLoginSerializer
 
     def post(self, request):
@@ -15,9 +13,17 @@ class LoginUserView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserProfileView(RetrieveUpdateAPIView):
+class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.UserProfileSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserProfileUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.UserProfileSerializer
 
     def get_object(self):
         return self.request.user
