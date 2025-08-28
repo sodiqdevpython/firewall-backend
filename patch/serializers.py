@@ -24,3 +24,18 @@ class PatchManagementSerializer(serializers.ModelSerializer):
 
         validated_data["device"] = device
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        bios_uuid = validated_data.pop("device_bios_uuid")
+        if bios_uuid:
+            try:
+                device = Device.objects.get(bios_uuid=bios_uuid)
+                instance.device = device
+            except Device.DoesNotExist:
+                raise serializers.ValidationError({"device_bios_uuid": "Device not found"})
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
