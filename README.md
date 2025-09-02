@@ -2,6 +2,8 @@ Bu loyihada qayerga qancha traffik ketayabdi qaysi dasturingiz qaysi davlatga ma
 agent: https://github.com/sodiqdevpython/firewall-agent-2 shu manzilda
 frontend: https://github.com/Numonov01/Firewall_data
 
+demo: http://firewall.surge.sh/  (diqqat http bilan kirishingiz shart https da ishlamaydi)
+
 <img width="1898" height="907" alt="image_2025-09-02_15-59-18" src="https://github.com/user-attachments/assets/4a0c6f29-7966-43ae-a53e-54a363b71880" />
 
 <img width="1901" height="905" alt="image_2025-09-02_15-59-36" src="https://github.com/user-attachments/assets/5a1f316b-6763-4ebc-ac96-2a97f3277b0f" />
